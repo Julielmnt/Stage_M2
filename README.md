@@ -31,4 +31,3 @@ Weiss, Julien. “A Tutorial on the Proper Orthogonal Decomposition.” In AIAA 
 #### DMD : 
 <a id="4">[4]</a> 
 Schmid, Peter J. “Dynamic Mode Decomposition of Numerical and Experimental Data.” Journal of Fluid Mechanics 656 (August 2010): 5–28. https://doi.org/10.1017/S0022112010001217.
->>>>>>> 3-organisation
