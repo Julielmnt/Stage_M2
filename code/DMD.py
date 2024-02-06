@@ -2,7 +2,7 @@
 
 import numpy as np
 from scipy.linalg import svd, qr, eig, eigh
-from scipy.linalg import pinv2 as pinv
+from scipy.linalg import pinv
 from scipy.linalg import inv as inv
 from scipy.sparse.linalg import svds
 
