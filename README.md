@@ -16,9 +16,9 @@
 [x] Run DMD algo on data\
 [] Run Sindy algo on data\
 [] Write a resume of Couston's paper\
-[] Read article symetries
-[] clean algo DMD and POD
-[] get statistical data from it
+[] Read article symetries\
+[] clean algo DMD and POD\
+[] get statistical data from it\
 
 # References
 #### Physical system : 
