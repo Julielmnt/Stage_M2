@@ -1,4 +1,4 @@
-# Stage_M2 :Emulation of subglacial lake/ocean dynamics with machine learning
+# Stage_M2 : Emulation of subglacial lake/ocean dynamics with machine learning
 
 ## Short-term objectives :
 
