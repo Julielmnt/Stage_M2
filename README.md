@@ -9,12 +9,16 @@
 
 ## ToDOlist
 [x] Understand physical system \
-[] Understand POD and DMD [[3]](#3), [[4]](#4)\
+[x] Understand POD and DMD [[3]](#3), [[4]](#4)\
+[] Write a rundown on POD and DMD
 [] Understand Sindy \
 [x] Run POD algo on the data \
-[] Run DMD algo on data\
+[x] Run DMD algo on data\
 [] Run Sindy algo on data\
-
+[] Write a resume of Couston's paper\
+[] Read article symetries
+[] clean algo DMD and POD
+[] get statistical data from it
 
 # References
 #### Physical system
