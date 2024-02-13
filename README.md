@@ -18,7 +18,9 @@
 [] Write a resume of Couston's paper\
 [] Read article symetries\
 [] clean algo DMD and POD\
-[] get statistical data from it\
+[] run DMD POD on T\
+[] Continue analysis on uz\
+[] Try attractor plot
 
 # References
 #### Physical system : 
