@@ -11,25 +11,12 @@ import matplotlib.pyplot as plt
 from matplotlib import cm
 
 
-def import_data(current_directory):
-  bulk = np.load(f"{current_directory}/data/bulk.npz")
-  time = bulk["time"]
-  x = bulk["x"]
-  z = bulk["z"]
-  u = bulk["u"]
-  w = bulk["w"]
-  T = bulk["T"]
-  umean = np.mean(u, axis=0)
-  u = u - umean
-
-  return time, x, z, u, w, T, umean
-
-
 def POD(U, h, l, num_modes= 100):
   POD = mr.compute_POD_arrays_snaps_method(np.swapaxes(U,0,1), list(mr.range(num_modes)))
   modes = POD.modes
   eigvals = POD.eigvals
   proj_coef = POD.proj_coeffs
+  eigvecs = POD.eigvecs
 
   # print(np.shape(modes))
   # print(np.shape(eigvals))
@@ -39,13 +26,13 @@ def POD(U, h, l, num_modes= 100):
       TKE = np.sum(eigvals)
       KE_mode.append(eigvals[i]*100/TKE)
 
-  POD_modes = []
-  [POD_modes.append([]) for i in range(num_modes)]
-  for i in range(num_modes):
-    POD_modes[i] = modes[:,i]
-    POD_modes[i] = POD_modes[i].reshape((h,l)) 
+  # POD_modes = []
+  # [POD_modes.append([]) for i in range(num_modes)]
+  # for i in range(num_modes):
+  #   POD_modes[i] = modes[:,i]
+  #   POD_modes[i] = POD_modes[i].reshape((h,l)) 
 
-  return POD_modes , KE_mode, modes, eigvals, proj_coef
+  return modes, eigvals, eigvecs, proj_coef, KE_mode
 
 
 def plot_results(umean, x, z, POD_modes, KE_mode, num_modes = 10):
