@@ -39,6 +39,8 @@ class Simulation:
         self.T = T
         self.umean = umean
         self.wmean = wmean
+        self.m = len(time)
+        self.h, self.l = np.shape(x)
 
         return self.time, self.x, self.z, self.u, self.w, self.T, self.umean, self.wmean
     
