@@ -44,7 +44,7 @@ class Simulation:
 
         return self.time, self.x, self.z, self.u, self.w, self.T, self.umean, self.wmean
     
-    def plot_T_field(self, t, save = False, directory = None):
+    def plot_field(self, t, save = False, directory = None):
         fig, ax = plt.subplots(figsize = (15,5))
         vmin=self.T.min() 
         vmax=self.T.max()
@@ -53,7 +53,7 @@ class Simulation:
         cf0 = ax.contourf(self.x, self.z, self.T[t, :, :], levels=levels, cmap=cm.Spectral.reversed(), norm=matplotlib.colors.Normalize(vmin=vmin, vmax=vmax))
         cbar = plt.colorbar(cf0, ax=ax, shrink=0.35, aspect = 6, ticks = self.ticks)
         cbar.ax.set_aspect('auto') 
-        ax.set_title(f'Temperature field at t = {t}')
+        ax.set_title(f'Temperature and velocity field at t = {t}')
         ax.set_aspect('equal')
         ax.set_ylim(0,1)
         ax.set_xlim(-4,4)
@@ -69,6 +69,37 @@ class Simulation:
         for t in range(t_start, t_end+1) :
             self.plot_T_field(t, save = True, directory = directory + f'snapshot_{t}')
 
+
+    def plot_meanfield(self, map = 'umean', save = False, directory = None):
+
+        fig, ax = plt.subplots(figsize = (15,5))
+        ax.streamplot(self.x.T, self.z.T, self.umean.T ,self.wmean.T, color = 'k', arrowsize = 0.7,linewidth = 1, density = 3)
+        if map == 'umean' :
+            cf0 = ax.contourf(self.x, self.z, self.umean, levels=20, cmap=cm.Spectral)
+        if map == 'wmean':
+            cf0 = ax.contourf(self.x, self.z, self.wmean, levels=20, cmap=cm.Spectral)
+        cbar = plt.colorbar(cf0, ax=ax, shrink=0.35, aspect = 6)
+        cbar.ax.set_aspect('auto') 
+        # ax.set_title(f'Quiver plot at t = {t}')
+        ax.set_aspect('equal')
+        ax.set_ylim(0,1)
+        ax.set_xlim(-4,4)
+
+        if save :
+            plt.savefig(directory,dpi=300)
+            plt.close()
+        else : 
+            plt.tight_layout()
+            plt.show()
+
+    def plot_meancomponent(self, component = 'u'):
+        fig, ax = plt.subplots(figsize=(10,8))
+        if component == 'u':
+            cf0 = ax.contourf(self.x, self.z, self.umean, levels=20, cmap=cm.Spectral)
+        if component == 'w':
+            cf0 = ax.contourf(self.x, self.z, self.wmean, levels=20, cmap=cm.Spectral)
+        plt.colorbar(cf0, aspect = 5, shrink = 0.13)
+        ax.set_aspect('equal', 'box')
 
 def plot_results(umean, x, z, POD_modes, KE_mode, num_modes=10):
 

@@ -13,6 +13,7 @@ from matplotlib import cm
 
 
 def POD(U, h, l, num_modes=100):
+
     POD = mr.compute_POD_arrays_snaps_method(
         np.swapaxes(U, 0, 1), mode_indices= np.arange(0,num_modes,1))
     
@@ -20,17 +21,6 @@ def POD(U, h, l, num_modes=100):
     eigvals = POD.eigvals
     proj_coef = POD.proj_coeffs
     eigvecs = POD.eigvecs
-
-    # print(np.shape(modes))
-    # print(np.shape(eigvals))
-
-
-
-    # POD_modes = []
-    # [POD_modes.append([]) for i in range(num_modes)]
-    # for i in range(num_modes):
-    #   POD_modes[i] = modes[:,i]
-    #   POD_modes[i] = POD_modes[i].reshape((h,l))
 
     return modes, eigvals, eigvecs, proj_coef
 
@@ -51,8 +41,44 @@ def KE_modes_two_components(eigvals_u, eigvals_w, num_modes = 100):
 
     return KE_modes
 
+def reconstruct_data(proj_coef_u, modes_u, num_modes, umean):
+    num_snapshots = proj_coef_u.shape[1]
+    reconstructed_snapshots = np.zeros((num_snapshots, umean.shape[0]))
+    reconstructed_data = proj_coef_u[:num_modes, :].T @ modes_u[:,:num_modes].T
+
+    return reconstructed_data
+
+
+def residual_norm(X, reconstructed_data):
+    residual = X - reconstructed_data
+
+    residual_norm = np.linalg.norm(residual, 'fro')
+    return residual_norm / np.size(X)
+
+def residuals(proj_coef_u, modes_u, num_modes, umean, U):
+
+    residuals = np.zeros(num_modes)
+    for i in range(1, num_modes + 1 ):
+        reconstructed_data = reconstruct_data(proj_coef_u, modes_u, i, umean)
+        r = residual_norm(U, reconstructed_data)
+        residuals[i-1] = r
+    return residuals
+
+def plot_residual(residuals, num_modes, fontsize = 18):
+
+    fig,ax = plt.subplots(figsize = (10, 8))
+
+    N_modes = np.arange(1, num_modes + 1, step = 1)
+
+    ax.scatter(N_modes, residuals, s = 30, c = 'orange')
+
+    # ax.set_title(r"Residual norm")
+    ax.set_ylabel('Residual norm', fontsize = fontsize)
+    ax.set_xlabel('Number of modes considered', fontsize = fontsize)
+    ax.legend()
 
 def plot_energy_contribution(KE_modes_all, j, fontsize) :
+
     N = np.arange(0, len(KE_modes_all[:j]), step = 1)
     fig, ax = plt.subplots(figsize=(10,5))
     ax.scatter(N, KE_modes_all[:j], c = 'teal')
@@ -65,17 +91,28 @@ def plot_energy_contribution(KE_modes_all, j, fontsize) :
     ax.set_xlabel(r"modes", fontsize = fontsize)
     ax.set_ylabel(r"\% of total energy", fontsize = fontsize)
 
-def plot_map_mode(n_mode, ):
-    j = n_mode
-    fig, ax = plt.subplots(figsize=(10,15))
-    cf0 = ax.contourf(x, z, np.sqrt(POD_modes_u[j]**2 + POD_modes_w[j]**2), levels=20, cmap=cm.nipy_spectral)
-    # plt.colorbar(cf0)
+
+def plot_map_mode(modes, KE_modes, n_mode, x, z):
+
+    fig, ax = plt.subplots(figsize=(10,8))
+    cf0 = ax.contourf(x, z, modes[:,:,n_mode], levels=20, cmap=cm.Spectral)
+    plt.colorbar(cf0, aspect = 5, shrink = 0.13)
+    ax.set_title(f'Mode {n_mode}, KE = {np.round(KE_modes[n_mode]*100, 2)}\%')
     ax.set_aspect('equal', 'box')
-    ax.set_title(f'Mode {j}, KE = {np.round((KE_mode_w[j]+KE_mode_u[j])/2, 2)}%')
-    plt.tight_layout()
-    plt.show()
-    # plt.savefig('pod_modes_first_w.png',dpi=300)
-    # plt.close()
+    
+def streamplot_mode(modes_u, modes_w, cmapmodes, KE_modes, n_mode, x, z):
+
+    fig, ax = plt.subplots(figsize = (15,5))
+
+    ax.streamplot(x.T, z.T, modes_u[:,:,n_mode].T ,modes_w[:,:,n_mode].T, color = 'k', arrowsize = 0.7,linewidth = 1, density = 3)
+    cf0 = ax.contourf(x, z, cmapmodes[:,:,n_mode], levels=20, cmap=cm.Spectral, norm=matplotlib.colors.Normalize(vmin=cmapmodes[:,:,n_mode].min(), vmax=cmapmodes[:,:,n_mode].max()))
+    cbar = plt.colorbar(cf0, ax=ax, shrink=0.35, aspect = 6)
+    cbar.ax.set_aspect('auto') 
+    # ax.set_title(f'Quiver plot at t = {t}')
+    ax.set_aspect('equal')
+    ax.set_ylim(0,1)
+    ax.set_xlim(-4,4)
+    ax.set_title(f'Mode {n_mode}, KE = {np.round(KE_modes[n_mode]*100, 2)}\%')
 
 
 def plot_results(umean, x, z, POD_modes, KE_mode, num_modes=10):
