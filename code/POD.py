@@ -41,9 +41,8 @@ def KE_modes_two_components(eigvals_u, eigvals_w, num_modes = 100):
 
     return KE_modes
 
-def reconstruct_data(proj_coef_u, modes_u, num_modes, umean):
+def reconstruct_data(proj_coef_u, modes_u, num_modes):
     num_snapshots = proj_coef_u.shape[1]
-    reconstructed_snapshots = np.zeros((num_snapshots, umean.shape[0]))
     reconstructed_data = proj_coef_u[:num_modes, :].T @ modes_u[:,:num_modes].T
 
     return reconstructed_data
@@ -51,25 +50,24 @@ def reconstruct_data(proj_coef_u, modes_u, num_modes, umean):
 
 def residual_norm(X, reconstructed_data):
     residual = X - reconstructed_data
-
     residual_norm = np.linalg.norm(residual, 'fro')
     return residual_norm / np.size(X)
 
-def residuals(proj_coef_u, modes_u, num_modes, umean, U):
-
+def residuals(proj_coef_u, modes_u, num_modes, U):
     residuals = np.zeros(num_modes)
     for i in range(1, num_modes + 1 ):
-        reconstructed_data = reconstruct_data(proj_coef_u, modes_u, i, umean)
+        reconstructed_data = reconstruct_data(proj_coef_u, modes_u, i)
         r = residual_norm(U, reconstructed_data)
         residuals[i-1] = r
     return residuals
+
 
 def plot_residual(residuals, num_modes, fontsize = 18):
 
     fig,ax = plt.subplots(figsize = (10, 8))
 
     N_modes = np.arange(1, num_modes + 1, step = 1)
-
+    
     ax.scatter(N_modes, residuals, s = 30, c = 'orange')
 
     # ax.set_title(r"Residual norm")
