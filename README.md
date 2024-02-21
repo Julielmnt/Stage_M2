@@ -8,17 +8,16 @@
 - Applying POD and DMD algorithms to the dataset to identify dominant modes-Comparing POD and DMD modes with modes obtained by thresholding the mean horizontal velocity
 
 ## ToDOlist
-[x] Understand physical system \
-[x] Understand POD and DMD [[3]](#3), [[4]](#4)\
-[] Write a rundown on POD and DMD
 [] Understand Sindy \
-[x] Run POD algo on the data \
-[x] Run DMD algo on data\
 [] Run Sindy algo on data\
 [] Write a resume of Couston's paper\
 [] Read article symetries\
-[] clean algo DMD and POD\
-[] get statistical data from it\
+[] clean code
+[] check reconstruction via POD and DMD\
+[] write autoencoder
+[] check dynamic within the modes
+[] run decomposition on HC
+
 
 # References
 #### Physical system : 
