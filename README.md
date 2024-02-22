@@ -12,11 +12,11 @@
 [] Run Sindy algo on data\
 [] Write a resume of Couston's paper\
 [] Read article symetries\
-[] clean code
+[] clean code\
 [] check reconstruction via POD and DMD\
-[] write autoencoder
-[] check dynamic within the modes
-[] run decomposition on HC
+[] write autoencoder\
+[] check dynamic within the modes\
+[] run decomposition on HC\
 
 
 # References
