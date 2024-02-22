@@ -53,11 +53,27 @@ class Simulation:
 
         return self.time, self.x, self.z, self.u, self.w, self.T, self.umean, self.wmean
     
-    def uz(self):
+    def reconstruct_simulation(self, U_reconstructed, W_reconstructed, T_reconstructed):
+        time, x, z, u, w, T, umean, wmean = self.import_data()
+        self.u = U_reconstructed
+        self.w = W_reconstructed
+        self.T = T_reconstructed
+    
+    def UZ(self):
         self.uz = np.mean(np.mean(self.u[:,:,25:51], axis = 2), axis = 1)
         self.uzmean = np.mean(self.uz)
-        print(f'Intervalle d\'intégration : {self.z[0,25:51]}')
         return self.uz, self.uzmean
+
+    def KE(self):
+        self.ke = 0.5 * (self.u**2 + self.w**2)
+        return self.ke
+
+    def divergence(self):
+        self.div_x = np.gradient(self.u, self.x[:,0], axis = 1)
+        self.div_z = np.gradient(self.w, self.z[0,:], axis = 2)
+        self.div = self.div_x + self.div_z
+
+        return self.div
 
     def plot_field(self, t, save=False, directory=None):
         fig, ax = plt.subplots(figsize=(15, 5))
@@ -81,12 +97,13 @@ class Simulation:
             cmap=cm.Spectral.reversed(),
             norm=matplotlib.colors.Normalize(vmin=vmin, vmax=vmax),
         )
-        cbar = plt.colorbar(cf0, ax=ax, shrink=0.35, aspect=6, ticks=self.ticks)
+        cbar = plt.colorbar(cf0, ax=ax, shrink=0.35, aspect=6, ticks= [vmin, 0, vmax])
         cbar.ax.set_aspect("auto")
         ax.set_title(f"Temperature and velocity field at t = {t}")
         ax.set_aspect("equal")
         ax.set_ylim(0, 1)
         ax.set_xlim(-4, 4)
+
 
         if save:
             plt.savefig(directory, dpi=300)
@@ -97,7 +114,7 @@ class Simulation:
 
     def save_clip(self, t_start, t_end, directory):
         for t in range(t_start, t_end + 1):
-            self.plot_T_field(t, save=True, directory=directory + f"snapshot_{t}")
+            self.plot_field(t, save=True, directory=directory + f"snapshot_{t}")
 
     def plot_meanfield(self, map="umean", save=False, directory=None):
         fig, ax = plt.subplots(figsize=(15, 5))

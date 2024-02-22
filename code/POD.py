@@ -42,7 +42,6 @@ def KE_modes_two_components(eigvals_u, eigvals_w, num_modes = 100):
     return KE_modes
 
 def reconstruct_data(proj_coef_u, modes_u, num_modes):
-    num_snapshots = proj_coef_u.shape[1]
     reconstructed_data = proj_coef_u[:num_modes, :].T @ modes_u[:,:num_modes].T
 
     return reconstructed_data
