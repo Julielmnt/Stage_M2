@@ -6,7 +6,9 @@ import numpy as np
 import modred as mr
 import os
 import matplotlib
-
+import imageio
+import os
+from natsort import natsorted
 matplotlib.use("TkAgg")  # Specify the backend
 import matplotlib.pyplot as plt
 from matplotlib import cm
@@ -39,6 +41,7 @@ class Simulation:
         T = bulk["T"]
         umean = np.mean(u, axis=0)
         wmean = np.mean(w, axis=0)
+        Tmean = np.mean(T, axis=0)
 
         self.time = time
         self.x = x
@@ -48,13 +51,14 @@ class Simulation:
         self.T = T
         self.umean = umean
         self.wmean = wmean
+        self.Tmean = Tmean
         self.m = len(time)
         self.h, self.l = np.shape(x)
 
-        return self.time, self.x, self.z, self.u, self.w, self.T, self.umean, self.wmean
+        return self.time, self.x, self.z, self.u, self.w, self.T, self.umean, self.wmean, self.Tmean
     
     def reconstruct_simulation(self, U_reconstructed, W_reconstructed, T_reconstructed):
-        time, x, z, u, w, T, umean, wmean = self.import_data()
+        time, x, z, u, w, T, umean, wmean, Tmean = self.import_data()
         self.u = U_reconstructed
         self.w = W_reconstructed
         self.T = T_reconstructed
@@ -77,8 +81,9 @@ class Simulation:
 
     def plot_field(self, t, save=False, directory=None):
         fig, ax = plt.subplots(figsize=(15, 5))
-        vmin = self.T.min()
-        vmax = self.T.max()
+        vmin = self.T[t, :, :].min()
+        vmax = self.T[t, :, :].max()
+        abs_max = max(abs(vmin), abs(vmax))
         ax.streamplot(
             self.x.T,
             self.z.T,
@@ -97,7 +102,7 @@ class Simulation:
             cmap=cm.Spectral.reversed(),
             norm=matplotlib.colors.Normalize(vmin=vmin, vmax=vmax),
         )
-        cbar = plt.colorbar(cf0, ax=ax, shrink=0.35, aspect=6, ticks= [vmin, 0, vmax])
+        cbar = plt.colorbar(cf0, ax=ax, shrink=0.35, aspect=6, ticks= [-abs_max, 0, abs_max])
         cbar.ax.set_aspect("auto")
         ax.set_title(f"Temperature and velocity field at t = {t}")
         ax.set_aspect("equal")
@@ -155,7 +160,15 @@ class Simulation:
         plt.colorbar(cf0, aspect=5, shrink=0.13)
         ax.set_aspect("equal", "box")
 
+def make_gif(image_directory, gif_path, fps):
 
+    image_files = natsorted([os.path.join(image_directory, file) for file in os.listdir(image_directory) if file.endswith('.png')])
+    with imageio.get_writer(gif_path, mode='I', fps = fps) as writer:
+        for image_file in image_files:
+            image = imageio.imread(image_file)
+            writer.append_data(image)
+
+    print(f"GIF created at: {gif_path}")
 
 
 if __name__ == "__main__":
