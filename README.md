@@ -35,3 +35,8 @@ Weiss, Julien. “A Tutorial on the Proper Orthogonal Decomposition.” In AIAA 
 #### DMD : 
 <a id="4">[4]</a> 
 Schmid, Peter J. “Dynamic Mode Decomposition of Numerical and Experimental Data.” Journal of Fluid Mechanics 656 (August 2010): 5–28. https://doi.org/10.1017/S0022112010001217.
+
+
+#### Autoencoder :
+<a id="5">[5]</a> 
+Bank, Dor, Noam Koenigstein, and Raja Giryes. “Autoencoders.” In Machine Learning for Data Science Handbook: Data Mining and Knowledge Discovery Handbook, edited by Lior Rokach, Oded Maimon, and Erez Shmueli, 353–74. Cham: Springer International Publishing, 2023. https://doi.org/10.1007/978-3-031-24628-9_16.
