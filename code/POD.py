@@ -50,7 +50,7 @@ def reconstruct_data(proj_coef_u, modes_u, num_modes):
 def residual_norm(X, reconstructed_data):
     residual = X - reconstructed_data
     residual_norm = np.linalg.norm(residual, 'fro')
-    return residual_norm / np.size(X)
+    return residual_norm / np.linalg.norm(X, 'fro')
 
 def residuals(proj_coef_u, modes_u, num_modes, U):
     residuals = np.zeros(num_modes)

@@ -171,6 +171,28 @@ def make_gif(image_directory, gif_path, fps):
     print(f"GIF created at: {gif_path}")
 
 
+def plot_uz(time, uz_reconstructed, uz, uzmean, num_modes, nmax, residuals_uw, fontsize):
+    fig, [ax1,ax2] = plt.subplots(1,2,figsize = (16, 5), gridspec_kw={'width_ratios': [2, 1]})
+
+
+    ax1.scatter(time, uz, s = 4, c = 'orange', label = r'ground truth $u_z$')
+    ax1.scatter(time, uz_reconstructed + uzmean, s = 10, c = 'cadetblue', label = r'reconstructed $u_z$')
+    ax1.set_ylabel(r'$u_z$', fontsize= fontsize)
+    ax1.set_xlabel(r'$t$', fontsize = fontsize)
+    ax1.legend(fontsize = fontsize, loc = 'upper left')
+
+
+    N_modes = np.arange(1, nmax + 1, step = 1)
+    ax2.scatter(N_modes[:num_modes], residuals_uw[:num_modes], s = 30, c = 'orchid', label = r"residual norm for the reconstruction of stacked u and w")
+
+    # ax.set_title(r"Residual norm")
+    ax2.set_ylabel('Residual norm', fontsize = fontsize)
+    ax2.set_xlabel('Number of modes considered', fontsize = fontsize)
+    ax2.set_ylim(bottom = 0)
+    ax2.legend(loc= "upper right")
+    fig.suptitle(f'number of modes = {num_modes} ', fontsize = fontsize)
+    fig.tight_layout()
+
 if __name__ == "__main__":
 
     current_directory = "/home/julielimonet/Documents/Stage_M2/"

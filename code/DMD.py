@@ -17,8 +17,6 @@ class DMD:
         self.T = np.reshape(simu.T - simu.Tmean, (simu.m, simu.h * simu.l))
         self.X = np.swapaxes(np.concatenate([self.U, self.W, self.T], axis = 1), 0, 1)
 
-
-
     def compute_dmd(self):
         self.V1 = self.X[:, :-1]
         self.V2 = self.X[:, 1:]
@@ -27,24 +25,29 @@ class DMD:
         Sigma_inv = pinv(np.diag(Sigma))
         S = self.U.T.conj() @ self.V2 @ W @ Sigma_inv
         self.eigenvalues, self.eigenvectors = eig(S)
+        self.Phi = self.U @ self.eigenvectors
+        self.bk = pinv(self.Phi) @ self.X
 
-        Phi = np.zeros((np.shape(self.U)[0],np.shape(self.eigenvectors)[1]))
-        for i in range(np.shape(self.eigenvectors)[1]):
-            Phi[:,i] = np.real(self.U @ self.eigenvectors[:,i])
-        self.Phi = Phi
-        return Phi
+    def compute_dmd_uw(self):
+        self.X = np.swapaxes(np.concatenate([self.U, self.W], axis = 1), 0, 1)
+        self.V1 = self.X[:, :-1]
+        self.V2 = self.X[:, 1:]
+        self.U, Sigma, W = svd(self.V1, full_matrices=False)
+        W = W.T.conj()
+        Sigma_inv = pinv(np.diag(Sigma))
+        S = self.U.T.conj() @ self.V2 @ W @ Sigma_inv
+        self.eigenvalues, self.eigenvectors = eig(S)
+        self.Phi = self.U @ self.eigenvectors
+        self.bk = pinv(self.Phi) @ self.X
         
-    def reconstruct_data(self):
-        self.b_k = pinv(self.Phi) @ self.X  
-        self.reconstructed_data = self.Phi @ self.b_k
-
+    def reconstruct_data(self, modes_indexes):
+        self.reconstructed_data = np.real(self.Phi[:,modes_indexes] @ self.bk[modes_indexes, :])
         return self.reconstructed_data
     
-    def residual_norm(self):
+    def compute_residual_norm(self):
         residual = self.X - self.reconstructed_data
-
         self.residual_norm = np.linalg.norm(residual, 'fro')
-        return self.residual_norm
+        return self.residual_norm/np.linalg.norm(self.X, 'fro')
     
             
 if __name__ == "__main__":
