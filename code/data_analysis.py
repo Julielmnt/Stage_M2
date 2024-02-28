@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-
+import sys
 import numpy as np
 import modred as mr
 import os
@@ -32,7 +32,7 @@ class Simulation:
         self.ticks = ticks
 
     def import_data(self):
-        bulk = np.load(f"{self.current_directory}/data/bulk.npz")
+        bulk = np.load(compatible_path(f"{self.current_directory}/data/bulk.npz"))
         time = bulk["time"]
         x = bulk["x"]
         z = bulk["z"]
@@ -192,6 +192,14 @@ def plot_uz(time, uz_reconstructed, uz, uzmean, num_modes, nmax, residuals_uw, f
     ax2.legend(loc= "upper right")
     fig.suptitle(f'number of modes = {num_modes} ', fontsize = fontsize)
     fig.tight_layout()
+
+def compatible_path(current_directory):
+    if sys.platform.startswith('win'):
+        print("Running on Windows")
+        current_directory = os.path.normpath(current_directory)
+    elif sys.platform.startswith('linux'):
+        print("Running on Linux")
+    return current_directory
 
 if __name__ == "__main__":
 

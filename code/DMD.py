@@ -39,11 +39,27 @@ class DMD:
         self.eigenvalues, self.eigenvectors = eig(S)
         self.Phi = self.U @ self.eigenvectors
         self.bk = pinv(self.Phi) @ self.X
+
+    def compute_restricted_dmd(self, n_snapshots):
+        self.X = np.swapaxes(np.concatenate([self.U[:n_snapshots, :], self.W[:n_snapshots, :], self.T[:n_snapshots, :]], axis = 1), 0, 1)
+        self.V1 = self.X[:, :-1]
+        self.V2 = self.X[:, 1:]
+        self.U, Sigma, W = svd(self.V1, full_matrices=False)
+        W = W.T.conj()
+        Sigma_inv = pinv(np.diag(Sigma))
+        S = self.U.T.conj() @ self.V2 @ W @ Sigma_inv
+        self.eigenvalues, self.eigenvectors = eig(S)
+        self.Phi = self.U @ self.eigenvectors
+        
         
     def reconstruct_data(self, modes_indexes):
         self.reconstructed_data = np.real(self.Phi[:,modes_indexes] @ self.bk[modes_indexes, :])
         return self.reconstructed_data
     
+    def reconstruct_data_from_restricted_dmd(self, modes_indexes):
+        self.X = np.swapaxes(np.concatenate([self.U, self.W, self.T], axis = 1), 0, 1)
+        self.bk = pinv(self.Phi) @ self.X
+
     def compute_residual_norm(self):
         residual = self.X - self.reconstructed_data
         self.residual_norm = np.linalg.norm(residual, 'fro')
