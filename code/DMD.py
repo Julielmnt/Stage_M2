@@ -41,14 +41,19 @@ class DMD:
         self.bk = pinv(self.Phi) @ self.X
 
     def compute_restricted_dmd(self, n_snapshots):
+        """Computes DMD for a restricted amount of snapshots
+
+        Arguments:
+            n_snapshots -- number of snapshots to consider. Must be at most m.
+        """
         self.X = np.swapaxes(np.concatenate([self.U[:n_snapshots, :], self.W[:n_snapshots, :], self.T[:n_snapshots, :]], axis = 1), 0, 1)
         self.V1 = self.X[:, :-1]
         self.V2 = self.X[:, 1:]
         self.U, Sigma, W = svd(self.V1, full_matrices=False)
         W = W.T.conj()
         Sigma_inv = pinv(np.diag(Sigma))
-        S = self.U.T.conj() @ self.V2 @ W @ Sigma_inv
-        self.eigenvalues, self.eigenvectors = eig(S)
+        self.S = self.U.T.conj() @ self.V2 @ W @ Sigma_inv
+        self.eigenvalues, self.eigenvectors = eig(self.S)
         self.Phi = self.U @ self.eigenvectors
         
         
@@ -56,7 +61,7 @@ class DMD:
         self.reconstructed_data = np.real(self.Phi[:,modes_indexes] @ self.bk[modes_indexes, :])
         return self.reconstructed_data
     
-    def reconstruct_data_from_restricted_dmd(self, modes_indexes):
+    def extrapolate_data(self, modes_indexes):
         self.X = np.swapaxes(np.concatenate([self.U, self.W, self.T], axis = 1), 0, 1)
         self.bk = pinv(self.Phi) @ self.X
 

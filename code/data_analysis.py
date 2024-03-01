@@ -32,6 +32,11 @@ class Simulation:
         self.ticks = ticks
 
     def import_data(self):
+        """Returns data from bulk.npz in a data folder in the current directory.
+
+        Returns:
+            arrays of time, x, z, u, w, T, umean, wmean and Tmean
+        """
         bulk = np.load(compatible_path(f"{self.current_directory}/data/bulk.npz"))
         time = bulk["time"]
         x = bulk["x"]
@@ -55,7 +60,14 @@ class Simulation:
         self.m = len(time)
         self.h, self.l = np.shape(x)
 
+
+        W = np.reshape(self.w - self.wmean, (self.m, self.h * self.l))
+        U = np.reshape(self.u - self.umean, (self.m, self.h * self.l))
+        T = np.reshape(self.T - self.Tmean, (self.m, self.h * self.l))
+        self.X = np.swapaxes(np.concatenate([U, W, T], axis = 1), 0, 1)
+
         return self.time, self.x, self.z, self.u, self.w, self.T, self.umean, self.wmean, self.Tmean
+
     
     def reconstruct_simulation(self, U_reconstructed, W_reconstructed, T_reconstructed):
         time, x, z, u, w, T, umean, wmean, Tmean = self.import_data()
@@ -193,13 +205,18 @@ def plot_uz(time, uz_reconstructed, uz, uzmean, num_modes, nmax, residuals_uw, f
     fig.suptitle(f'number of modes = {num_modes} ', fontsize = fontsize)
     fig.tight_layout()
 
-def compatible_path(current_directory):
+
+def compatible_path(current_directory, verbose = False):
     if sys.platform.startswith('win'):
-        print("Running on Windows")
+        if verbose :
+            print("Running on Windows")
         current_directory = os.path.normpath(current_directory)
     elif sys.platform.startswith('linux'):
-        print("Running on Linux")
+        if verbose :
+            print("Running on Linux")
     return current_directory
+
+
 
 if __name__ == "__main__":
 
