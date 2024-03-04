@@ -24,12 +24,14 @@ class Simulation:
         Gamma=8,
         Lambda=1e-2,
         ticks=[-0.04, 0, 0.05, 0.10, 0.15],
+        normalize = None
     ):
         self.Ra = Ra
         self.Gamma = Gamma
         self.Lambda = Lambda
         self.current_directory = current_directory
         self.ticks = ticks
+        self.normalize = normalize
 
     def import_data(self):
         """Returns data from bulk.npz in a data folder in the current directory.
@@ -60,6 +62,11 @@ class Simulation:
         self.m = len(time)
         self.h, self.l = np.shape(x)
 
+        if self.normalize:
+            self.u = self.u/np.max(self.u)
+            self.w = self.u/np.max(self.w)
+            self.T = self.u/np.max(self.T)
+
 
         W = np.reshape(self.w - self.wmean, (self.m, self.h * self.l))
         U = np.reshape(self.u - self.umean, (self.m, self.h * self.l))
@@ -68,6 +75,14 @@ class Simulation:
 
         return self.time, self.x, self.z, self.u, self.w, self.T, self.umean, self.wmean, self.Tmean
 
+    def image_rgb(self):
+        h = self.h
+        l = self.l
+        image_rgb = np.zeros((int(np.shape(self.X)[0]/3), np.shape(self.X)[1], 3))
+        image_rgb[:, :,0] = self.X[:h*l, :]/np.max(self.X[:h*l, :])
+        image_rgb[:, :,1] = self.X[h*l:2*h*l, :]/np.max(self.X[h*l:2*h*l, :])
+        image_rgb[:, :,2] = self.X[2*h*l:, :]/np.max(self.X[2*h*l:, :])
+        self.X_rgb = image_rgb
     
     def reconstruct_simulation(self, U_reconstructed, W_reconstructed, T_reconstructed):
         time, x, z, u, w, T, umean, wmean, Tmean = self.import_data()
