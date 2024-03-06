@@ -3,13 +3,12 @@
 
 import sys
 import numpy as np
-import modred as mr
 import os
 import matplotlib
 import imageio
 import os
 from natsort import natsorted
-matplotlib.use("TkAgg")  # Specify the backend
+# matplotlib.use("TkAgg")  # Specify the backend
 import matplotlib.pyplot as plt
 from matplotlib import cm
 
@@ -24,7 +23,7 @@ class Simulation:
         Gamma=8,
         Lambda=1e-2,
         ticks=[-0.04, 0, 0.05, 0.10, 0.15],
-        normalize = None
+        normalize = False
     ):
         self.Ra = Ra
         self.Gamma = Gamma
@@ -62,26 +61,31 @@ class Simulation:
         self.m = len(time)
         self.h, self.l = np.shape(x)
 
-        if self.normalize:
-            self.u = self.u/np.max(self.u)
-            self.w = self.u/np.max(self.w)
-            self.T = self.u/np.max(self.T)
 
 
         W = np.reshape(self.w - self.wmean, (self.m, self.h * self.l))
         U = np.reshape(self.u - self.umean, (self.m, self.h * self.l))
         T = np.reshape(self.T - self.Tmean, (self.m, self.h * self.l))
+
+
+        if self.normalize:
+            U = U/np.max(np.abs(U))
+            W = W/np.max(np.abs(W))
+            T = T/np.max(np.abs(T))
+
         self.X = np.swapaxes(np.concatenate([U, W, T], axis = 1), 0, 1)
+
+
 
         return self.time, self.x, self.z, self.u, self.w, self.T, self.umean, self.wmean, self.Tmean
 
     def image_rgb(self):
         h = self.h
         l = self.l
-        image_rgb = np.zeros((int(np.shape(self.X)[0]/3), np.shape(self.X)[1], 3))
-        image_rgb[:, :,0] = self.X[:h*l, :]/np.max(self.X[:h*l, :])
-        image_rgb[:, :,1] = self.X[h*l:2*h*l, :]/np.max(self.X[h*l:2*h*l, :])
-        image_rgb[:, :,2] = self.X[2*h*l:, :]/np.max(self.X[2*h*l:, :])
+        image_rgb = np.zeros((3, np.shape(self.u)[0], np.shape(self.u)[1], np.shape(self.u)[2]))
+        image_rgb[0, :, :, :] = (self.u-self.umean)/np.max(np.abs(self.u))
+        image_rgb[1, :, :, :] = (self.w-self.wmean)/np.max(np.abs(self.w))
+        image_rgb[2, :, :, :] = (self.T-self.Tmean)/np.max(np.abs(self.T))
         self.X_rgb = image_rgb
     
     def reconstruct_simulation(self, U_reconstructed, W_reconstructed, T_reconstructed):
