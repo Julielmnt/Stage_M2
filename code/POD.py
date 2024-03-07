@@ -7,7 +7,6 @@ import modred as mr
 import os
 import matplotlib
 
-matplotlib.use("TkAgg")  # Specify the backend
 import matplotlib.pyplot as plt
 from matplotlib import cm
 

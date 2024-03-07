@@ -75,9 +75,22 @@ class Simulation:
 
         self.X = np.swapaxes(np.concatenate([U, W, T], axis = 1), 0, 1)
 
-
-
         return self.time, self.x, self.z, self.u, self.w, self.T, self.umean, self.wmean, self.Tmean
+    
+    def import_partial_data(self):
+
+        bulk = np.load(compatible_path(f"{self.current_directory}/data/bulk.npz"))
+        time = bulk["time"]
+        x = bulk["x"]
+        z = bulk["z"]
+
+        self.time = time
+        self.x = x
+        self.z = z
+        self.m = len(time)
+        self.h, self.l = np.shape(x)
+
+        return self.time, self.x, self.z
 
     def image_rgb(self):
         h = self.h
@@ -88,11 +101,13 @@ class Simulation:
         image_rgb[2, :, :, :] = (self.T-self.Tmean)/np.max(np.abs(self.T))
         self.X_rgb = image_rgb
     
-    def reconstruct_simulation(self, U_reconstructed, W_reconstructed, T_reconstructed):
-        time, x, z, u, w, T, umean, wmean, Tmean = self.import_data()
-        self.u = U_reconstructed
-        self.w = W_reconstructed
-        self.T = T_reconstructed
+    def reconstruct_simulation(self, X_reconstructed):
+        self.m = np.shape(X_reconstructed)[0]
+        time, x, z = self.import_partial_data()
+        self.X = X_reconstructed
+        self.u = np.reshape(X_reconstructed[:, :self.h*self.l], (self.m, self.h, self.l))
+        self.w = np.reshape(X_reconstructed[:, self.h*self.l:2*self.h*self.l], (self.m, self.h,self.l))
+        self.T = np.reshape(X_reconstructed[:, 2*self.h*self.l:], (self.m, self.h, self.l))
     
     def UZ(self):
         self.uz = np.mean(np.mean(self.u[:,:,25:51], axis = 2), axis = 1)

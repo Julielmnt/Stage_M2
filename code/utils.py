@@ -27,10 +27,15 @@
 import os
 import torch
 import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib
+from matplotlib import cm
+from natsort import natsorted
+import imageio
 
 def get_freer_gpu():
     """
-    Function from Deepinv library
+    Function from DeepInv library
     Returns the GPU device with the most free memory.
 
     """
@@ -49,3 +54,52 @@ def get_freer_gpu():
         print("Couldn't find free GPU")
 
     return device
+
+def make_gif(image_directory, gif_path, fps):
+
+    image_files = natsorted([os.path.join(image_directory, file) for file in os.listdir(image_directory) if file.endswith('.png')])
+    with imageio.get_writer(gif_path, mode='I', fps = fps) as writer:
+        for image_file in image_files:
+            image = imageio.imread(image_file)
+            writer.append_data(image)
+
+    print(f"GIF created at: {gif_path}")
+
+
+def plot_field(simu, u, w, T,  t, save=False, directory=None):
+    fig, ax = plt.subplots(figsize=(15, 5))
+    vmin = T.min()
+    vmax = T.max()
+    abs_max = max(abs(vmin), abs(vmax))
+    ax.streamplot(
+        simu.x.T,
+        simu.z.T,
+        u.T,
+        w.T,
+        color="k",
+        arrowsize=0.7,
+        linewidth=1,
+    )
+    levels = np.linspace(vmin, vmax, 20)
+    cf0 = ax.contourf(
+        simu.x,
+        simu.z,
+        T,
+        levels=levels,
+        cmap=cm.Spectral.reversed(),
+        norm=matplotlib.colors.Normalize(vmin=vmin, vmax=vmax),
+    )
+    cbar = plt.colorbar(cf0, ax=ax, shrink=0.35, aspect=6, ticks= [vmin, 0, vmax])
+    cbar.ax.set_aspect("auto")
+    ax.set_title(f"Temperature and velocity field at t = {t}")
+    ax.set_aspect("equal")
+    ax.set_ylim(0, 1)
+    ax.set_xlim(-4, 4)
+
+
+    if save:
+        plt.savefig(directory, dpi=300)
+        plt.close()
+    else:
+        plt.tight_layout()
+        plt.show()
