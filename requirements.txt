@@ -19,6 +19,7 @@ kiwisolver==1.4.5
 MarkupSafe==2.1.5
 matplotlib==3.8.3
 matplotlib-inline==0.1.6
+modred==2.1.0
 mpmath==1.3.0
 natsort==8.4.0
 nest-asyncio==1.6.0
@@ -49,6 +50,7 @@ Pygments==2.17.2
 pyparsing==3.1.1
 python-dateutil==2.9.0.post0
 pyzmq==25.1.2
+scipy==1.12.0
 six==1.16.0
 stack-data==0.6.3
 sympy==1.12

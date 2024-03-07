@@ -148,7 +148,7 @@ class Simulation:
             cmap=cm.Spectral.reversed(),
             norm=matplotlib.colors.Normalize(vmin=vmin, vmax=vmax),
         )
-        cbar = plt.colorbar(cf0, ax=ax, shrink=0.35, aspect=6, ticks= [-abs_max, 0, abs_max])
+        cbar = plt.colorbar(cf0, ax=ax, shrink=0.35, aspect=6, ticks= [vmin, 0, vmax])
         cbar.ax.set_aspect("auto")
         ax.set_title(f"Temperature and velocity field at t = {t}")
         ax.set_aspect("equal")

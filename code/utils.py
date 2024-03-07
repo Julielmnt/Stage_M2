@@ -53,6 +53,11 @@ def get_freer_gpu():
         device = torch.device(f"cuda")
         print("Couldn't find free GPU")
 
+    try:
+        os.remove("tmp")
+    except FileNotFoundError:
+        pass
+
     return device
 
 def make_gif(image_directory, gif_path, fps):
