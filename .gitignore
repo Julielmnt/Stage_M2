@@ -154,4 +154,8 @@ cython_debug/
 
 # OTHER FILES
 data/
-results/
+results/data_analysis
+results/DMD
+results/POD
+results/pureHC
+results/pureRB
