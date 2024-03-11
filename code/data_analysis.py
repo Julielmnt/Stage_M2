@@ -69,6 +69,9 @@ class Simulation:
 
 
         if self.normalize:
+            self.Umax = np.max(np.abs(U))
+            self.Wmax = np.max(np.abs(W))
+            self.Tmax = np.max(np.abs(T))
             U = U/np.max(np.abs(U))
             W = W/np.max(np.abs(W))
             T = T/np.max(np.abs(T))
@@ -101,13 +104,21 @@ class Simulation:
         image_rgb[2, :, :, :] = (self.T-self.Tmean)/np.max(np.abs(self.T))
         self.X_rgb = image_rgb
     
-    def reconstruct_simulation(self, X_reconstructed):
-        self.m = np.shape(X_reconstructed)[0]
-        time, x, z = self.import_partial_data()
-        self.X = X_reconstructed
-        self.u = np.reshape(X_reconstructed[:, :self.h*self.l], (self.m, self.h, self.l))
-        self.w = np.reshape(X_reconstructed[:, self.h*self.l:2*self.h*self.l], (self.m, self.h,self.l))
-        self.T = np.reshape(X_reconstructed[:, 2*self.h*self.l:], (self.m, self.h, self.l))
+    def reconstruct_simulation(self, X_reconstructed, rgb = False):
+        if not rgb : 
+            self.m = np.shape(X_reconstructed)[0]
+            time, x, z = self.import_partial_data()
+            self.X = X_reconstructed
+            self.u = np.reshape(X_reconstructed[:, :self.h*self.l], (self.m, self.h, self.l))
+            self.w = np.reshape(X_reconstructed[:, self.h*self.l:2*self.h*self.l], (self.m, self.h,self.l))
+            self.T = np.reshape(X_reconstructed[:, 2*self.h*self.l:], (self.m, self.h, self.l))
+        if rgb : 
+            self.m = np.shape(X_reconstructed)[0]
+            time, x, z = self.import_partial_data()
+            self.X = X_reconstructed
+            self.u = X_reconstructed[:, 0, :, :]
+            self.w = X_reconstructed[:, 1, :, :]
+            self.T = X_reconstructed[:, 2, :, :]
     
     def UZ(self):
         self.uz = np.mean(np.mean(self.u[:,:,25:51], axis = 2), axis = 1)
