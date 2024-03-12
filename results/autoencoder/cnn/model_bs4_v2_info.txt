@@ -1,0 +1,16 @@
+Information about Convolutionnal Autoencoder with batch size 4
+size1 = (40, 25)
+size2 = (20, 12)
+size3 = (10, 6)
+size4 = (5, 3)
+num epoch = 10
+epoch 0, loss 0.029034920036792755
+epoch 1, loss 0.01875774934887886
+epoch 2, loss 0.021118486300110817
+epoch 3, loss 0.016747567802667618
+epoch 4, loss 0.018006030470132828
+epoch 5, loss 0.017337728291749954
+epoch 6, loss 0.017832938581705093
+epoch 7, loss 0.018179738894104958
+epoch 8, loss 0.01577593758702278
+epoch 9, loss 0.01628030464053154

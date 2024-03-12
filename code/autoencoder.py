@@ -87,30 +87,31 @@ class SimpleLinearAutoencoder(nn.Module):
 
 
 
-class ConvolutionalAutoencoder(nn.Module):
+class ConvolutionalAutoencoder_v1(nn.Module):
 
-    def __init__(self, device, n_channels = 64, kernel_size = 3, stride = 1, padding = 1):
+    def __init__(self, device, n_channels = 64, kernel_size = 3, stride = 1, padding = 1, bias = True):
         super().__init__()
         #shape : B * 3 * 81 * 51
         self.encoder = nn.Sequential(
-            nn.Conv2d(3, n_channels//2, kernel_size, stride = stride, padding = padding), 
+            nn.Conv2d(3, n_channels//2, kernel_size, stride = stride, padding = padding, bias = bias), 
             nn.ReLU(), 
             nn.Upsample(size=size1, mode='bilinear', align_corners=False), 
-            nn.Conv2d(n_channels//2, n_channels, kernel_size, stride = stride, padding = padding),
+            nn.Conv2d(n_channels//2, n_channels, kernel_size, stride = stride, padding = padding, bias = bias),
             nn.ReLU(),
             nn.Upsample(size=size2, mode='bilinear', align_corners=False), 
-            nn.Conv2d(n_channels, n_channels, kernel_size, stride = stride, padding = padding), 
+            nn.Conv2d(n_channels, n_channels, kernel_size, stride = stride, padding = padding, bias = bias), 
+            nn.ReLU(),
             nn.Upsample(size=size3, mode='bilinear', align_corners=False)).to(device)
         
         
         self.decoder = nn.Sequential(
-            nn.ConvTranspose2d(n_channels, n_channels//2, kernel_size, stride = stride, padding = padding), 
+            nn.ConvTranspose2d(n_channels, n_channels//2, kernel_size, stride = stride, padding = padding, bias = bias), 
             nn.ReLU(), 
             nn.Upsample(size=size2, mode='bilinear', align_corners=False), 
-            nn.ConvTranspose2d(n_channels//2, n_channels, kernel_size, stride = stride, padding = padding),
+            nn.ConvTranspose2d(n_channels//2, n_channels, kernel_size, stride = stride, padding = padding, bias = bias),
             nn.ReLU(),
             nn.Upsample(size=size1, mode='bilinear', align_corners=False), 
-            nn.ConvTranspose2d(n_channels, 3, kernel_size, stride = stride, padding = padding), 
+            nn.ConvTranspose2d(n_channels, 3, kernel_size, stride = stride, padding = padding, bias = bias), 
             nn.Upsample(size=(81, 51), mode='bilinear', align_corners=False)).to(device)
         
         
@@ -118,7 +119,6 @@ class ConvolutionalAutoencoder(nn.Module):
         encoded = self.encoder(x)
         decoded = self.decoder(encoded)
         return decoded
-
 
 if __name__ == "__main__":
 
