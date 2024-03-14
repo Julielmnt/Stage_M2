@@ -22,9 +22,8 @@ import utils
 importlib.reload(utils)
 from utils import get_freer_gpu
 
-device = get_freer_gpu() if torch.cuda.is_available() else "cpu"
 
-
+    
 class SimuDataset(Dataset):
     """Dataset for the flow field, gets data from the Simulation class.
 
@@ -32,25 +31,32 @@ class SimuDataset(Dataset):
         Dataset -- class from Pytorch to processing data
     """
 
-    def __init__(self, simu, rgb = False):
+
+    def __init__(self, simu, device, training_ratio = 1, rgb = False, transform = None):
         """Initiate SimuDataset class
 
         Arguments:
             simu -- instance from Simulation class
 
         Keyword Arguments:
-            rgb -- Boolean, if set to True, the maps are generated with 3 channels, similarly to a rgb image (default: {False})
+            training_ratio -- ratio of dataset to consider in training (default: {1})
+            rgb -- 3 channels arrays (default: {False})
+            transform -- dataset transfomation / normalisation to consider (default: {None})
         """
-        X = simu.X
+        X = simu.X[:, :int(training_ratio * simu.m)]
         if rgb : 
-            X = simu.X_rgb
+            X = simu.X_rgb[:, :int(training_ratio * simu.m), :, :]
         self.x = torch.from_numpy(X).to(device)
         self.n_snapshots = X.shape[1]
+        self.transform = transform
         self.rgb = rgb
         
     def __getitem__(self, index):
         sample = self.x[:,index]
         t = index
+        
+        if self.transform:
+            sample = self.transform(sample)
         if self.rgb:
             sample = self.x[:,index, :, :]
         return sample, t 
@@ -58,12 +64,10 @@ class SimuDataset(Dataset):
     def __len__(self):
         return self.n_snapshots
     
-
-    
 class SimpleLinearAutoencoder(nn.Module):
     """Simple Naive Linear Autoencoder """
 
-    def __init__(self, N, K = 20, device = device):
+    def __init__(self, N, device, K = 20):
         """Initiates SimpleLinearAutoencoder class
 
         Arguments:
@@ -120,7 +124,77 @@ class ConvolutionalAutoencoder_v1(nn.Module):
         decoded = self.decoder(encoded)
         return decoded
 
+
+class ConvolutionalAutoencoder(nn.Module):
+
+    def __init__(self, device, sizes, n_channels = 64, kernel_size = 3, stride = 1, padding = 1, bias = True):
+        super().__init__()
+        #shape : B * 3 * 81 * 51
+        self.kernel_size = kernel_size
+        self.stride = stride
+        self.padding = padding
+        self.bias = bias
+        self.device = device
+        self.n_channels = n_channels
+        self.sizes = sizes
+
+
+        self.encoder = nn.Sequential(
+            self.conv_block(3, self.n_channels), 
+            nn.Upsample(size=sizes[0], mode='bilinear', align_corners=False), 
+
+            self.conv_block(self.n_channels, self.n_channels), 
+            nn.Upsample(size=sizes[1], mode='bilinear', align_corners=False), 
+
+            self.conv_block(self.n_channels, self.n_channels), 
+            nn.Upsample(size=sizes[2], mode='bilinear', align_corners=False), 
+            
+            self.conv_block(self.n_channels, self.n_channels), 
+            nn.Upsample(size=sizes[3], mode='bilinear', align_corners=False),
+            
+            nn.Conv2d(n_channels, n_channels, kernel_size, stride = stride, padding = padding, bias = bias)).to(device)
+        
+        self.decoder = nn.Sequential(
+            self.conv_block(self.n_channels, self.n_channels), 
+            nn.Upsample(size=sizes[2], mode='bilinear', align_corners=False), 
+
+            self.conv_block(self.n_channels, self.n_channels), 
+            nn.Upsample(size=sizes[1], mode='bilinear', align_corners=False),
+
+            self.conv_block(self.n_channels, self.n_channels), 
+            nn.Upsample(size=sizes[0], mode='bilinear', align_corners=False), 
+
+            self.conv_block(self.n_channels, self.n_channels), 
+            nn.Upsample(size=(81, 51), mode='bilinear', align_corners=False), 
+            
+            nn.ConvTranspose2d(n_channels, 3, kernel_size, stride = stride, padding = padding, bias = bias)).to(device)
+    
+    def conv_block(self, ch_in, ch_out):
+         return nn.Sequential(nn.Conv2d(ch_in, ch_out, self.kernel_size, stride = self.stride, padding = self.padding, bias = self.bias),
+                              nn.BatchNorm2d(ch_out),
+                              nn.ReLU(), 
+                              nn.Conv2d(ch_out, ch_out, self.kernel_size, stride = self.stride, padding = self.padding, bias = self.bias), 
+                              nn.BatchNorm2d(ch_out),
+                              nn.ReLU())
+        
+    def forward(self, x):
+        encoded = self.encoder(x)
+        decoded = self.decoder(encoded)
+        return decoded
+
+
+
+
+
+
+
+
+
+
+
 if __name__ == "__main__":
+    device = get_freer_gpu() if torch.cuda.is_available() else "cpu"
+
 
 #Dataloading
     from data_analysis import compatible_path

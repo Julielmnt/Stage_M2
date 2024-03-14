@@ -61,20 +61,23 @@ class Simulation:
         self.m = len(time)
         self.h, self.l = np.shape(x)
 
+        self.u = self.u - umean
+        self.w = self.w - wmean
+        self.T = self.T - Tmean
+
+        W = np.reshape(self.w, (self.m, self.h * self.l))
+        U = np.reshape(self.u, (self.m, self.h * self.l))
+        T = np.reshape(self.T, (self.m, self.h * self.l))
 
 
-        W = np.reshape(self.w - self.wmean, (self.m, self.h * self.l))
-        U = np.reshape(self.u - self.umean, (self.m, self.h * self.l))
-        T = np.reshape(self.T - self.Tmean, (self.m, self.h * self.l))
-
+        self.Umax = np.max(np.abs(U))
+        self.Wmax = np.max(np.abs(W))
+        self.Tmax = np.max(np.abs(T))
 
         if self.normalize:
-            self.Umax = np.max(np.abs(U))
-            self.Wmax = np.max(np.abs(W))
-            self.Tmax = np.max(np.abs(T))
-            U = U/np.max(np.abs(U))
-            W = W/np.max(np.abs(W))
-            T = T/np.max(np.abs(T))
+            U = U/self.Umax
+            W = W/self.Wmax
+            T = T/self.Tmax
 
         self.X = np.swapaxes(np.concatenate([U, W, T], axis = 1), 0, 1)
 
@@ -99,12 +102,14 @@ class Simulation:
         h = self.h
         l = self.l
         image_rgb = np.zeros((3, np.shape(self.u)[0], np.shape(self.u)[1], np.shape(self.u)[2]))
-        image_rgb[0, :, :, :] = (self.u-self.umean)/np.max(np.abs(self.u))
-        image_rgb[1, :, :, :] = (self.w-self.wmean)/np.max(np.abs(self.w))
-        image_rgb[2, :, :, :] = (self.T-self.Tmean)/np.max(np.abs(self.T))
+        image_rgb[0, :, :, :] = self.u/self.Umax
+        image_rgb[1, :, :, :] = self.w/self.Wmax
+        image_rgb[2, :, :, :] = self.T/self.Tmax
         self.X_rgb = image_rgb
     
-    def reconstruct_simulation(self, X_reconstructed, rgb = False):
+
+    def reconstruct_simulation(self, X_reconstructed, rgb = False, normalize = None):
+
         if not rgb : 
             self.m = np.shape(X_reconstructed)[0]
             time, x, z = self.import_partial_data()
@@ -119,7 +124,15 @@ class Simulation:
             self.u = X_reconstructed[:, 0, :, :]
             self.w = X_reconstructed[:, 1, :, :]
             self.T = X_reconstructed[:, 2, :, :]
-    
+
+        if normalize is not None:
+            Umax = normalize[0]
+            Wmax = normalize[1]
+            Tmax = normalize[2]
+            self.u = X_reconstructed[:, 0, :, :] * Umax
+            self.w = X_reconstructed[:, 1, :, :] * Wmax
+            self.T = X_reconstructed[:, 2, :, :] * Tmax
+
     def UZ(self):
         self.uz = np.mean(np.mean(self.u[:,:,25:51], axis = 2), axis = 1)
         self.uzmean = np.mean(self.uz)
@@ -136,16 +149,22 @@ class Simulation:
 
         return self.div
 
-    def plot_field(self, t, save=False, directory=None):
+    def plot_field(self, t, normalization = None, save=False, directory=None):
         fig, ax = plt.subplots(figsize=(15, 5))
+
+        u = self.u
+        w = self.w
+        T = self.T
+
         vmin = self.T[t, :, :].min()
         vmax = self.T[t, :, :].max()
         abs_max = max(abs(vmin), abs(vmax))
+
         ax.streamplot(
             self.x.T,
             self.z.T,
-            self.u[t, :, :].T,
-            self.w[t, :, :].T,
+            u[t, :, :].T,
+            w[t, :, :].T,
             color="k",
             arrowsize=0.7,
             linewidth=1,
@@ -154,7 +173,7 @@ class Simulation:
         cf0 = ax.contourf(
             self.x,
             self.z,
-            self.T[t, :, :],
+            T[t, :, :],
             levels=levels,
             cmap=cm.Spectral.reversed(),
             norm=matplotlib.colors.Normalize(vmin=vmin, vmax=vmax),
@@ -165,7 +184,6 @@ class Simulation:
         ax.set_aspect("equal")
         ax.set_ylim(0, 1)
         ax.set_xlim(-4, 4)
-
 
         if save:
             plt.savefig(directory, dpi=300)

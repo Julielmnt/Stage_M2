@@ -111,12 +111,17 @@ def plot_field(simu, u, w, T,  t, save=False, directory=None):
 
 
 
-def info_text(directory, batch_size, sizes, num_epoch, info, version = 1):
+def info_text(directory, batch_size, sizes, info, version = 1, **training_params):
     with open(directory + f"model_bs{batch_size}_v{version}_info.txt", 'w') as file:
-        file.write(f"Information about Convolutionnal Autoencoder with batch size {batch_size}\n")
+        file.write(f"Information about Convolutionnal Autoencoder with batch size {batch_size}\n\n")
         for i in range(len(sizes)):
             file.write(f"size{i+1} = {sizes[i]}\n")
 
-        file.write(f"num epoch = {num_epoch}\n")
+        for key, value in training_params.items():
+            file.write(f"{key} = {value}\n")
+            
         for i in range(len(info)):
-            file.write(f"epoch {info[i][0]}, loss {info[i][1]}\n")
+            file.write(f"epoch {info[i][0] + 1}, loss {info[i][1]}\n")
+
+
+        
