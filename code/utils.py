@@ -111,17 +111,68 @@ def plot_field(simu, u, w, T,  t, save=False, directory=None):
 
 
 
-def info_text(directory, batch_size, sizes, info, version = 1, **training_params):
-    with open(directory + f"model_bs{batch_size}_v{version}_info.txt", 'w') as file:
+def info_text(directory, batch_size, sizes, info, version = 1, K = None, **training_params):
+    from datetime import datetime
+    
+    if K == None : 
+        title = f"model_bs{batch_size}_v{version}_info.txt"
+    else :
+        title = f"model_bs{batch_size}_K{K}_info.txt"
+
+    with open(directory + title, 'w') as file:
         file.write(f"Information about Convolutionnal Autoencoder with batch size {batch_size}\n\n")
+        current_date = datetime.now()
+        file.write(f"date : {current_date}\n")
+        if K is not None : 
+            file.write(f"K = {K}\n")
+        file.write(f"batch_size = {batch_size}\n")
         for i in range(len(sizes)):
             file.write(f"size{i+1} = {sizes[i]}\n")
+            
 
         for key, value in training_params.items():
             file.write(f"{key} = {value}\n")
             
         for i in range(len(info)):
             file.write(f"epoch {info[i][0] + 1}, loss {info[i][1]}\n")
+    print("info saved !")
 
 
-        
+def get_variables_from_info_text(directory, title):
+    variables = {}
+    sizes = []
+    with open(directory + title, 'r') as file:
+        for line in file:
+            if line.startswith('size'):
+                size = eval(line.split('=')[1].strip())
+                sizes.append(size)
+            if '=' in line:
+                key, value = line.split('=')
+                key = key.strip()
+                value = eval(value.strip())
+                variables[key] = value
+            elif line.startswith('epoch'):
+                epoch, loss = line.split(',')
+                epoch = int(epoch.split()[1])
+                loss = float(loss.split()[1])
+                variables[f'epoch_{epoch}'] = loss
+
+    for key, value in variables.items():
+        print(f"{key}: {value}")
+    return variables, sizes
+
+def losses_from_info(variables):
+    epochs = []
+    losses = []
+
+    for key, value in variables.items():
+        if key.startswith('epoch_'):
+            epoch_number = int(key.split('_')[1])
+            epochs.append(epoch_number)
+            losses.append(value)
+    return epochs, losses
+
+def compute_residual_norm(X, reconstructed_data):
+    residual = X - reconstructed_data
+    residual_norm = np.linalg.norm(residual, 'fro')
+    return residual_norm / np.linalg.norm(X, 'fro')

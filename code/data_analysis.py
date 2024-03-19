@@ -11,6 +11,7 @@ from natsort import natsorted
 # matplotlib.use("TkAgg")  # Specify the backend
 import matplotlib.pyplot as plt
 from matplotlib import cm
+dtype = np.float64
 
 
 class Simulation:
@@ -31,6 +32,7 @@ class Simulation:
         self.current_directory = current_directory
         self.ticks = ticks
         self.normalize = normalize
+        self.Umax = None
 
     def import_data(self):
         """Returns data from bulk.npz in a data folder in the current directory.
@@ -45,9 +47,9 @@ class Simulation:
         u = bulk["u"]
         w = bulk["w"]
         T = bulk["T"]
-        umean = np.mean(u, axis=0)
-        wmean = np.mean(w, axis=0)
-        Tmean = np.mean(T, axis=0)
+        umean = np.mean(u, axis=0, dtype = dtype)
+        wmean = np.mean(w, axis=0, dtype = dtype)
+        Tmean = np.mean(T, axis=0, dtype = dtype)
 
         self.time = time
         self.x = x
@@ -65,23 +67,29 @@ class Simulation:
         self.w = self.w - wmean
         self.T = self.T - Tmean
 
+        self.X = self.X_from_uwt()
+
+        return self.time, self.x, self.z, self.u, self.w, self.T, self.umean, self.wmean, self.Tmean
+    
+    def X_from_uwt(self):
         W = np.reshape(self.w, (self.m, self.h * self.l))
         U = np.reshape(self.u, (self.m, self.h * self.l))
-        T = np.reshape(self.T, (self.m, self.h * self.l))
-
-
-        self.Umax = np.max(np.abs(U))
-        self.Wmax = np.max(np.abs(W))
-        self.Tmax = np.max(np.abs(T))
+        Temp = np.reshape(self.T, (self.m, self.h * self.l))
+    
+        
+        if self.Umax == None :
+            self.Umax = np.max(np.abs(U))
+            self.Wmax = np.max(np.abs(W))
+            self.Tmax = np.max(np.abs(Temp))
 
         if self.normalize:
             U = U/self.Umax
             W = W/self.Wmax
-            T = T/self.Tmax
+            Temp = Temp/self.Tmax
 
-        self.X = np.swapaxes(np.concatenate([U, W, T], axis = 1), 0, 1)
+        self.X = np.swapaxes(np.concatenate([U, W, Temp], axis = 1, dtype = dtype), 0, 1)
 
-        return self.time, self.x, self.z, self.u, self.w, self.T, self.umean, self.wmean, self.Tmean
+        return self.X
     
     def import_partial_data(self):
 
@@ -99,12 +107,11 @@ class Simulation:
         return self.time, self.x, self.z
 
     def image_rgb(self):
-        h = self.h
-        l = self.l
         image_rgb = np.zeros((3, np.shape(self.u)[0], np.shape(self.u)[1], np.shape(self.u)[2]))
-        image_rgb[0, :, :, :] = self.u/self.Umax
-        image_rgb[1, :, :, :] = self.w/self.Wmax
-        image_rgb[2, :, :, :] = self.T/self.Tmax
+        
+        image_rgb[0, :, :, :] = np.reshape(np.swapaxes(self.X, 0, 1)[:, : self.h * self.l], (self.m, self.h, self.l))
+        image_rgb[1, :, :, :] = np.reshape(np.swapaxes(self.X, 0, 1)[:, self.h * self.l : 2 * self.h * self.l], (self.m, self.h, self.l))
+        image_rgb[2, :, :, :] = np.reshape(np.swapaxes(self.X, 0, 1)[:, 2 * self.h * self.l :], (self.m, self.h, self.l))
         self.X_rgb = image_rgb
     
 
@@ -117,21 +124,23 @@ class Simulation:
             self.u = np.reshape(X_reconstructed[:, :self.h*self.l], (self.m, self.h, self.l))
             self.w = np.reshape(X_reconstructed[:, self.h*self.l:2*self.h*self.l], (self.m, self.h,self.l))
             self.T = np.reshape(X_reconstructed[:, 2*self.h*self.l:], (self.m, self.h, self.l))
+
         if rgb : 
             self.m = np.shape(X_reconstructed)[0]
             time, x, z = self.import_partial_data()
-            self.X = X_reconstructed
+            self.X_rgb = np.swapaxes(X_reconstructed, 0, 1)
             self.u = X_reconstructed[:, 0, :, :]
             self.w = X_reconstructed[:, 1, :, :]
             self.T = X_reconstructed[:, 2, :, :]
 
         if normalize is not None:
-            Umax = normalize[0]
-            Wmax = normalize[1]
-            Tmax = normalize[2]
-            self.u = X_reconstructed[:, 0, :, :] * Umax
-            self.w = X_reconstructed[:, 1, :, :] * Wmax
-            self.T = X_reconstructed[:, 2, :, :] * Tmax
+            print("normalized")
+            self.Umax = normalize[0]
+            self.Wmax = normalize[1]
+            self.Tmax = normalize[2]
+            self.u = X_reconstructed[:, 0, :, :] * self.Umax
+            self.w = X_reconstructed[:, 1, :, :] * self.Wmax
+            self.T = X_reconstructed[:, 2, :, :] * self.Tmax
 
     def UZ(self):
         self.uz = np.mean(np.mean(self.u[:,:,25:51], axis = 2), axis = 1)
@@ -156,8 +165,8 @@ class Simulation:
         w = self.w
         T = self.T
 
-        vmin = self.T[t, :, :].min()
-        vmax = self.T[t, :, :].max()
+        vmin = self.T[:, :, :].min()
+        vmax = self.T[:, :, :].max()
         abs_max = max(abs(vmin), abs(vmax))
 
         ax.streamplot(
