@@ -1,0 +1,54 @@
+wandb_version: 1
+
+Lambda:
+  desc: null
+  value: 0.01
+K:
+  desc: null
+  value: 700
+depth:
+  desc: null
+  value: 0
+'batch_size ':
+  desc: null
+  value: 4
+lr:
+  desc: null
+  value: 0.0001
+training_mode:
+  desc: null
+  value: num_epoch
+training_ratio:
+  desc: null
+  value: 0.9
+directory:
+  desc: null
+  value: ..//results/fcnn/new_architecture/pca_only/
+_wandb:
+  desc: null
+  value:
+    python_version: 3.11.2
+    cli_version: 0.17.0
+    framework: torch
+    is_jupyter_run: false
+    is_kaggle_kernel: false
+    start_time: 1716556441
+    t:
+      1:
+      - 1
+      - 41
+      - 55
+      2:
+      - 1
+      - 41
+      - 55
+      3:
+      - 2
+      - 13
+      - 16
+      - 23
+      4: 3.11.2
+      5: 0.17.0
+      8:
+      - 5
+      13: linux-x86_64

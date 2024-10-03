@@ -1,0 +1,72 @@
+wandb_version: 1
+
+Lambda:
+  desc: null
+  value: 0.01
+Ra:
+  desc: null
+  value: 100000000.0
+'batch_size ':
+  desc: null
+  value: 2
+kernel_size:
+  desc: null
+  value: 5
+lr:
+  desc: null
+  value: 0.0001
+training_mode:
+  desc: null
+  value: num_epochs
+training_ratio:
+  desc: null
+  value: 0.9
+directory:
+  desc: null
+  value: ..//results/cnn/pandeylike/convnext/Ra1e8/kernel5/
+Ra_power:
+  desc: null
+  value: 8
+n_channels:
+  desc: null
+  value: 8
+pandey:
+  desc: null
+  value: true
+convnext:
+  desc: null
+  value: true
+group:
+  desc: null
+  value: Ra1e8
+pandey_data:
+  desc: null
+  value: false
+_wandb:
+  desc: null
+  value:
+    python_version: 3.11.2
+    cli_version: 0.17.0
+    framework: torch
+    is_jupyter_run: false
+    is_kaggle_kernel: false
+    start_time: 1718976636
+    t:
+      1:
+      - 1
+      - 41
+      - 55
+      2:
+      - 1
+      - 41
+      - 55
+      3:
+      - 2
+      - 13
+      - 16
+      - 23
+      4: 3.11.2
+      5: 0.17.0
+      8:
+      - 5
+      13: linux-x86_64

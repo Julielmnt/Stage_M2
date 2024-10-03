@@ -77,7 +77,7 @@ def plot_energy_contribution(KE_modes_all, j, fontsize) :
 
     N = np.arange(0, len(KE_modes_all[:j]), step = 1)
     fig, ax = plt.subplots(figsize=(10,5))
-    ax.scatter(N, KE_modes_all[:j], c = 'teal')
+    ax.scatter(N, KE_modes_all[:j], c = 'orchid')
     ax.set_xticks(N)
     ax.axhline(0.01, label = r"0.1\% line", c = 'k')
     # ax.set_title(r'Energy contribution for each mode')

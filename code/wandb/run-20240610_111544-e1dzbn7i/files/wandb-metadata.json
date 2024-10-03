@@ -1,0 +1,217 @@
+{
+    "os": "Linux-6.1.0-18-amd64-x86_64-with-glibc2.36",
+    "python": "3.11.2",
+    "heartbeatAt": "2024-06-10T09:15:44.847698",
+    "startedAt": "2024-06-10T09:15:44.166219",
+    "docker": null,
+    "cuda": null,
+    "args": [
+        "--K",
+        "800",
+        "--lr",
+        "1e-4",
+        "--num_epochs",
+        "100",
+        "--group",
+        "test"
+    ],
+    "state": "running",
+    "program": "/projects/IceDynamics/Stage_M2/code/linear_autoencoder.py",
+    "codePathLocal": "linear_autoencoder.py",
+    "codePath": "code/linear_autoencoder.py",
+    "git": {
+        "remote": "git@github.com:Julielmnt/Stage_M2.git",
+        "commit": "05f73a0d50cd2072f85a59de6732e36691cf0de5"
+    },
+    "email": null,
+    "root": "/projects/IceDynamics/Stage_M2",
+    "host": "threadripper",
+    "username": "jlimonet",
+    "executable": "/projects/IceDynamics/Stage_M2/.venv/bin/python3",
+    "cpu_count": 16,
+    "cpu_count_logical": 32,
+    "cpu_freq": {
+        "current": 2328.98775,
+        "min": 2200.0,
+        "max": 3400.0
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 2200.0,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2200.0,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2200.0,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 3761.585,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2200.0,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2200.0,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2200.0,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 3400.0,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2200.0,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2200.0,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2200.0,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2200.0,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2107.832,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2200.0,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2200.0,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2200.0,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2200.0,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2200.0,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2200.0,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2200.0,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2200.0,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2110.75,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2112.859,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 3772.276,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2200.0,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2200.0,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2200.0,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 1889.263,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2200.0,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2200.0,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2195.494,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2195.97,
+            "min": 2200.0,
+            "max": 3400.0
+        }
+    ],
+    "disk": {
+        "/": {
+            "total": 31.323265075683594,
+            "used": 1.7920913696289062
+        }
+    },
+    "gpu": "NVIDIA GeForce RTX 4090",
+    "gpu_count": 1,
+    "gpu_devices": [
+        {
+            "name": "NVIDIA GeForce RTX 4090",
+            "memory_total": 25757220864
+        }
+    ],
+    "memory": {
+        "total": 62.64653015136719
+    }
+}

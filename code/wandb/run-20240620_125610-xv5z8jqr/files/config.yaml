@@ -1,0 +1,67 @@
+wandb_version: 1
+
+_wandb:
+  desc: null
+  value:
+    python_version: 3.11.2
+    cli_version: 0.17.0
+    framework: torch
+    is_jupyter_run: false
+    is_kaggle_kernel: false
+    start_time: 1718880970
+    t:
+      1:
+      - 1
+      - 41
+      - 55
+      2:
+      - 1
+      - 41
+      - 55
+      3:
+      - 2
+      - 5
+      - 14
+      - 23
+      - 62
+      4: 3.11.2
+      5: 0.17.0
+      8:
+      - 5
+      13: linux-x86_64
+K:
+  desc: null
+  value: 10
+Q:
+  desc: null
+  value: 1000
+Ra:
+  desc: null
+  value: 10000000.0
+lr:
+  desc: null
+  value: 0.0001
+depth:
+  desc: null
+  value: 4
+Lambda:
+  desc: null
+  value: 0.01
+Ra_power:
+  desc: null
+  value: 7
+directory:
+  desc: null
+  value: ..//results/fcnn/pandey_data/
+'batch_size ':
+  desc: null
+  value: 4
+pandey_data:
+  desc: null
+  value: true
+training_mode:
+  desc: null
+  value: num_epoch
+training_ratio:
+  desc: null
+  value: 0.9

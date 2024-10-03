@@ -1,0 +1,223 @@
+{
+    "os": "Linux-6.1.0-18-amd64-x86_64-with-glibc2.36",
+    "python": "3.11.2",
+    "heartbeatAt": "2024-06-10T16:28:24.709081",
+    "startedAt": "2024-06-10T16:28:23.313783",
+    "docker": null,
+    "cuda": null,
+    "args": [
+        "--K",
+        "900",
+        "--lr",
+        "1e-4",
+        "--num_epochs",
+        "100",
+        "--group",
+        "Ra1e7",
+        "--Ra",
+        "1e7",
+        "--Lambda",
+        "1000",
+        "--wandb_on",
+        "True"
+    ],
+    "state": "running",
+    "program": "/projects/IceDynamics/Stage_M2/code/fcnn.py",
+    "codePathLocal": "fcnn.py",
+    "codePath": "code/fcnn.py",
+    "git": {
+        "remote": "git@github.com:Julielmnt/Stage_M2.git",
+        "commit": "05f73a0d50cd2072f85a59de6732e36691cf0de5"
+    },
+    "email": null,
+    "root": "/projects/IceDynamics/Stage_M2",
+    "host": "threadripper",
+    "username": "jlimonet",
+    "executable": "/projects/IceDynamics/Stage_M2/.venv/bin/python3",
+    "cpu_count": 16,
+    "cpu_count_logical": 32,
+    "cpu_freq": {
+        "current": 2464.2429374999997,
+        "min": 2200.0,
+        "max": 3400.0
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 2200.0,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 1852.354,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 3839.733,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 1854.951,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 1851.754,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2200.0,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2200.0,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 3400.0,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2200.0,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2200.0,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 1934.047,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 3699.629,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 3699.652,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 3100.373,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2108.6,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 1876.863,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2200.0,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2200.0,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2200.0,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2200.0,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2200.0,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2200.0,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2200.0,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 3839.785,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2200.0,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 3400.0,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2200.0,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 3699.627,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 3695.928,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 3690.982,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 1889.203,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2034.465,
+            "min": 2200.0,
+            "max": 3400.0
+        }
+    ],
+    "disk": {
+        "/": {
+            "total": 31.323265075683594,
+            "used": 1.7927436828613281
+        }
+    },
+    "gpu": "NVIDIA GeForce RTX 4090",
+    "gpu_count": 1,
+    "gpu_devices": [
+        {
+            "name": "NVIDIA GeForce RTX 4090",
+            "memory_total": 25757220864
+        }
+    ],
+    "memory": {
+        "total": 62.64653015136719
+    }
+}
